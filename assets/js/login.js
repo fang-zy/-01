@@ -1,88 +1,79 @@
 $(function () {
-    // 需求1: 点击a链接，显示隐藏盒子;
-    $("#link_reg").on("click", function () {
-        // 登录模块里面的a链接被点击，显示注册盒子，隐藏登录盒子;
-        $(".login-box").hide();
+    // 需求1：点击a链接，显示隐藏盒子
+    $('#link_reg').click(function () {
+        $('.login-box').hide();
         $(".reg-box").show();
-    });
-    $("#link_login").on("click", function () {
-        // 注册模块里面的a链接被点击，显示登录盒子，隐藏注册盒子;
+    })
+    $('#link_login').click(() => {
+        $('.login-box').show();
         $(".reg-box").hide();
-        $(".login-box").show();
-    });
-
-    // 需求2: 自定义 layui 校验规则
-    // console.log(layui)  
+    })
+    // 需求2：自定义layui校验规则
     let form = layui.form;
-    // verify()的参数是一个对象
     form.verify({
-        // 属性是校验规则名称，值是函数或者数组
         pwd: [
             /^[\S]{6,12}$/,
             '密码必须6到12位，且不能出现空格'
         ],
-        // 重复密码校验规则
         repwd: function (value, item) { //value：表单的值、item：表单的DOM对象
-            // // 重复密码里面input的value值
-            // console.log(value);
-            // console.log($(".reg-box input[name=password]").val());
-            if (value != $(".reg-box input[name=password]").val()) {
-                return "两次密码输入不一致，请重新输入！"
+            let pwd = $('.reg-box input[name=password]').val();
+            // console.log(value, pwd);
+            if (value != pwd) {
+                // 只要密码与确认密码不一致，就要用return结束，否则还会执行表单提交里面的内容
+                return '两次输入的密码不一致';
             }
         }
-    });
-
-    // 需求3: 注册用户
+    })
+    // 需求3：注册用户
     let layer = layui.layer;
-    $("#form_reg").on("submit", function (e) {
+    $('#form_reg').on("submit", function (e) {
         // 阻止表单默认提交
         e.preventDefault();
         // 发送ajax
-        // ajax三板斧：1.console   2.请求 type,url,data   3.响应体
         $.ajax({
-            type: 'POST',
             url: '/api/reguser',
+            type: 'post',
             data: {
                 username: $(".reg-box input[name=username]").val(),
                 password: $(".reg-box input[name=password]").val()
             },
-            success: function (res) {
-                // console.log(res)
+            dataType: 'json',
+            success: (res) => {
+                console.log(res);
                 if (res.status != 0) {
-                    // return alert(res.message);
-                    return layer.msg(res.message, { icon: 5 });
+                    return layer.alert(res.message, { icon: 5 });
                 }
-                // 提示成功
-                // alert("恭喜您，用户名注册成功！");
-                layer.msg("恭喜您，用户名注册成功！", { icon: 6 });
-                // 切换回登录模块
-                $("#link_login").click();
-                // 表单清空
-                $("#form_reg")[0].reset();
+                layer.alert(res.message, { icon: 6 });
+                // 跳转回登录页面
+                $('#link_login').click();
+                // 清空表单
+                $('#form_reg')[0].reset();
             }
-        });
-    });
-
-    // 需求4: 用户登录
-    $("#form_login").on("submit", function (e) {
+        })
+    })
+    // 需求4：用户登录
+    $('#form_login').on("submit", function (e) {
         // 阻止表单默认提交
         e.preventDefault();
         // 发送ajax
-        // ajax三板斧：1.console   2.请求 type,url,data   3.响应体
         $.ajax({
-            type: 'POST',
             url: '/api/login',
-            data: $(this).serialize(),
-            success: function (res) {
-                // 错误提示
+            type: 'post',
+            data: {
+                username: $(".login-box input[name=username]").val(),
+                password: $(".login-box input[name=password]").val()
+            },
+            dataType: 'json',
+            success: (res) => {
+                console.log(res);
                 if (res.status != 0) {
-                    return layer.msg(res.message, { icon: 5 });
+                    return layer.alert(res.message, { icon: 5 });
                 }
-                // 成功后操作，跳转页面，保存token
-                location.href = "/index.html";
-                localStorage.setItem("token", res.token);
+                //跳转到后台页面
+                location.href = "/index.html"
+                //存储token
+                localStorage.setItem('token', res.token)
             }
-        });
+        })
     })
-
-});
+})
