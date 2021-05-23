@@ -11,35 +11,36 @@ $(function () {
 function getUserInfo() {
     $.ajax({
         url: '/my/userinfo',
-        // 配置头信息，设置token，身份识别认证！
         headers: {
-            Authorization: localStorage.getItem("token") || ""
+            // 配置头信息，设置token，身份识别认证！
+            Authorization: localStorage.getItem('token') || ''
         },
-        success: function (res) {
-            // console.log(res);
-            if (res.status != 0) {
-                return layui.layer.msg(res.message, {icon: 5});
+        success: (res) => {
+            console.log(res);
+            if (res.status == 0) {
+                // 头像和用户名渲染
+                renderAvatar(res.data);
+            } else if (res.status != 0) {
+                return layui.layer.msg(res.message, { icon: 5 });
             }
-            // 头像和文字渲染
-            renderAvatar(res.data);
         }
-    });
+    })
 }
 
 // 头像和文字渲染封装
 function renderAvatar(user) {
     // console.log(user);
     // 1.渲染用户名，如果有昵称以昵称为准
-    let name = user.nickname || user.username;
-    $("#welcome").html("欢迎&nbsp;&nbsp;" + name);
+    let name = user.username || user.nickname;
+    $('#welcome').html("欢迎" + name);
     // 2.渲染头像; 判断图片头像是否存在
     if (user.user_pic == null) {
-        // 隐藏图片头像, 渲染文字头像
-        $(".layui-nav-img").hide();
-        $(".text-avatar").show().html(name[0].toUpperCase());
+        // 头像照片为空，隐藏头像显示名字的第一个
+        $('.layui-nav-img').hide();
+        $('.text-avatar').show().html(name[0]);
     } else {
-        // 渲染图片头像，隐藏文字头像
-        $(".layui-nav-img").show().attr("src", user.user_pic);
-        $(".text-avatar").hide();
+        $('.text-avatar').hide();
+        $('.layui-nav-img').show().attr('src', user.user_pic);
     }
+
 }
