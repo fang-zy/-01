@@ -3,6 +3,15 @@ $(function () {
     // 需求1: ajax获取用户信息，渲染到页面
     //   这个功能，后面其他的页面/模块还要用，所以必须设置为全局函数;
     getUserInfo();
+    $('#btnLogout').click(() => {
+        layui.layer.confirm('是否确定退出登录？?', { icon: 3, title: '提示' }, function (index) {
+            //销毁token并跳转到登录页面
+            localStorage.removeItem('token');
+            location.href = '/login.html'
+            // 关闭弹窗
+            layer.close(index);
+        });
+    });
 
 });
 
@@ -16,7 +25,7 @@ function getUserInfo() {
             Authorization: localStorage.getItem('token') || ''
         },
         success: (res) => {
-            console.log(res);
+            // console.log(res);
             if (res.status == 0) {
                 // 头像和用户名渲染
                 renderAvatar(res.data);
@@ -24,6 +33,14 @@ function getUserInfo() {
                 return layui.layer.msg(res.message, { icon: 5 });
             }
         }
+        // complete: (res) => {
+        //     // console.log(res.responseJSON);
+        //     if(res.responseJSON.status==1){
+        //          跳转到登录页面，销毁token
+        //          localStorage.removeItem("token");
+        //          location.href = "/login.html";
+        //     }
+        // }
     })
 }
 
