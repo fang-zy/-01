@@ -20,10 +20,10 @@ $(function () {
 function getUserInfo() {
     $.ajax({
         url: '/my/userinfo',
-        headers: {
-            // 配置头信息，设置token，身份识别认证！
-            Authorization: localStorage.getItem('token') || ''
-        },
+        // headers: {
+        //     // 配置头信息，设置token，身份识别认证！
+        //     Authorization: localStorage.getItem('token') || ''
+        // },
         success: (res) => {
             // console.log(res);
             if (res.status == 0) {
@@ -48,8 +48,8 @@ function getUserInfo() {
 function renderAvatar(user) {
     // console.log(user);
     // 1.渲染用户名，如果有昵称以昵称为准
-    let name = user.username || user.nickname;
-    $('#welcome').html("欢迎" + name);
+    let name = user.nickname || user.username;
+    $('#welcome').html("欢迎&nbsp;&nbsp;" + name);
     // 2.渲染头像; 判断图片头像是否存在
     if (user.user_pic == null) {
         // 头像照片为空，隐藏头像显示名字的第一个

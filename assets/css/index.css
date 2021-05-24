@@ -16,6 +16,7 @@
 .layui-body {
     /* 去掉滚动条 */
     overflow: hidden;
+    background-color: #f2f3f5;
 }
 
 iframe {
