@@ -3,7 +3,6 @@ $(function () {
     // 需求1: ajax获取用户信息，渲染到页面
     //   这个功能，后面其他的页面/模块还要用，所以必须设置为全局函数;
     getUserInfo();
-
 });
 
 
@@ -18,7 +17,7 @@ function getUserInfo() {
         success: function (res) {
             // console.log(res);
             if (res.status != 0) {
-                return layui.layer.msg(res.message, {icon: 5});
+                return layui.layer.msg(res.message, { icon: 5 });
             }
             // 头像和文字渲染
             renderAvatar(res.data);
